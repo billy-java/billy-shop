@@ -1,8 +1,8 @@
-import p1_img from '/public/imgs/artikeln/product_1.png';
-import p2_img from '/public/imgs/artikeln/product_2.png';
-import p3_img from '/public/imgs/artikeln/product_3.png';
-import p4_img from '/public/imgs/artikeln/product_4.png';
-import p5_img from '/public/imgs/artikeln/product_5.png';
+import p1_img from '/public/imgs/artikeln/product_1.webp';
+import p2_img from '/public/imgs/artikeln/product_2.webp';
+import p3_img from '/public/imgs/artikeln/product_3.webp';
+import p4_img from '/public/imgs/artikeln/product_4.webp';
+import p5_img from '/public/imgs/artikeln/product_5.webp';
 
 import { I_Produkt } from '../type/I_Produkt';
 
