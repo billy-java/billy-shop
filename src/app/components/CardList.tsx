@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import shopping_icon from '@/app/lib/icons/shopping.svg';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../lib/redux/Cart_Slice';
 import { generateID } from '../lib/type/T_Produkt_Cart';
 import { RootState } from '../lib/redux/redux';
+import Popup from './Popup';
 
 interface produkt_Hook {
   titel: string;
@@ -17,12 +18,17 @@ interface produkt_Hook {
 
 const CardList = ({ titel, list }: produkt_Hook) => {
   const dispatch = useDispatch();
-  const produktList = useSelector((state: RootState) => state.cart);
+  const currentBestellung = useSelector((state: RootState) => state.cart);
+  const [nachricht, setNachricht] = useState<string>('');
 
+  useEffect(() => {
+    setNachricht(currentBestellung.message);
+    return ;
+  }, [currentBestellung]);
   
   const handleAddToCart = (produkt: I_Produkt) => {
     const itemToAdd = {
-      cart_ID:generateID(produktList.produkt_List),
+      cart_ID: generateID(currentBestellung.produkt_List),
       produkt_ID: produkt.id.toString(),
       produktPreis: produkt.neuer_preis
         ? produkt.neuer_preis
@@ -33,10 +39,22 @@ const CardList = ({ titel, list }: produkt_Hook) => {
     };
 
     dispatch(addItem(itemToAdd));
+
+    /* if (currentBestellung.neuProdukt_INFO === "Erfolgreicht") { */
+    setNachricht(currentBestellung.message);
+    /* } */
+
+  
   };
+
+  function testons() {
+    setNachricht("")
+  }
+
 
   return (
     <div className="my-20">
+      {nachricht !== '' && <Popup message={nachricht} setNachricht={testons}  farbe="bg-green-600"/>}
       <h2 className="text-2xl font-semibold text-gray-300 mb-4">{titel}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {list.map((produkt, index) => {
@@ -71,14 +89,20 @@ const CardList = ({ titel, list }: produkt_Hook) => {
 
                 {/* Div containing the price and button pushed to the bottom */}
                 <div className="mt-auto pt-4">
-                  <p>
-                    <span className="text-red-400 text-lg line-through">
+                  {produkt.neuer_preis ? (
+                    <p>
+                      <span className="text-red-400 text-lg line-through">
+                        {produkt.alter_preis}€
+                      </span>
+                      <span className="text-indigo-600 text-2xl font-semibold ml-2">
+                        {produkt.neuer_preis}€
+                      </span>
+                    </p>
+                  ) : (
+                    <span className="text-indigo-600 text-2xl font-semibold ml-2">
                       {produkt.alter_preis}€
                     </span>
-                    <span className="text-indigo-600 text-2xl font-semibold ml-2">
-                      {produkt.neuer_preis}€
-                    </span>
-                  </p>
+                  )}
                   <button
                     className="bg-white hover:bg-blue-300 border border-white hover:border-2 hover:border-black w-full rounded-sm py-2 flex text-[#8C1AF6] mt-3"
                     onClick={() => handleAddToCart(produkt)}>
@@ -103,3 +127,4 @@ const CardList = ({ titel, list }: produkt_Hook) => {
 };
 
 export default CardList;
+

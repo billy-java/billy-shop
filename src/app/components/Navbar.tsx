@@ -93,6 +93,7 @@ const Navbar = () => {
               <div className="border border-indigo-700 rounded-lg px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
                 {getUpdatedMenus().map((el, index) => (
                   <Link
+                    onClick={() => setClick(false)}
                     href={el.url}
                     key={index}
                     className={`${

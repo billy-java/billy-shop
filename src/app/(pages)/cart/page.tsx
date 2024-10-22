@@ -1,7 +1,7 @@
 'use client';
 
 import { RootState } from '@/app/lib/redux/redux';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import shopping_icon from '@/app/lib/icons/shopping.svg';
 import Image, { StaticImageData } from 'next/image';
@@ -13,13 +13,22 @@ import {
 } from '@/app/lib/arrays/alle_Produkte';
 import { I_Produkt } from '@/app/lib/type/I_Produkt';
 import Link from 'next/link';
+import Popup from '@/app/components/Popup';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const { produkt_List, preis } = useSelector((state: RootState) => state.cart);
+  const currentBestellung = useSelector((state: RootState) => state.cart);
+  const [nachricht, setNachricht] = useState<string>('');
+
+  useEffect(() => {
+    setNachricht('');
+    return;
+  }, []);
 
   const handleRemoveItem = (id: string) => {
     dispatch(deleteItem(id));
+    setNachricht(currentBestellung.message);
   };
 
   const getBild = (produkt_ID: string, kategorie: string): StaticImageData => {
@@ -35,8 +44,15 @@ const Cart = () => {
     return item ? item.bild : shopping_icon;
   };
 
+  function testons() {
+    setNachricht('');
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {nachricht !== '' && (
+        <Popup message={nachricht} setNachricht={testons} farbe="bg-red-600" />
+      )}
       <h1 className="text-3xl font-bold text-gray-300 mb-10 text-center">
         Ihr Warenkorb
       </h1>

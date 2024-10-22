@@ -5,7 +5,8 @@ export type T_Bestellung = {
   kunde_Nr: string;
   produkt_List: T_Produkt_Cart[];
   preis: number;
-  stand: string;
   bestellungs_Datum: string;
+  stand: string;
+  message: string;
 };
 

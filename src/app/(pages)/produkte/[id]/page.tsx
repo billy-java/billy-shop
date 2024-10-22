@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import { addItem } from '@/app/lib/redux/Cart_Slice';
@@ -12,11 +12,18 @@ import {
   maennerArtikeln,
 } from '@/app/lib/arrays/alle_Produkte';
 import { RootState } from '@/app/lib/redux/redux';
+import Popup from '@/app/components/Popup';
 
 const DetailsProdukt = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const produktList2 = useSelector((state: RootState) => state.cart);
+  const currentBestellung = useSelector((state: RootState) => state.cart);
+  const [nachricht, setNachricht] = useState<string>('');
+
+  useEffect(() => {
+    setNachricht(currentBestellung.message);
+    return;
+  }, [currentBestellung]);
 
   const produktList = [
     ...frauenArtikeln,
@@ -33,7 +40,7 @@ const DetailsProdukt = () => {
 
   const handleAddToCart = () => {
     const neuItem: T_Produkt_Cart = {
-      cart_ID: generateID(produktList2.produkt_List),
+      cart_ID: generateID(currentBestellung.produkt_List),
       produkt_ID: produkt.id.toString(),
       produktPreis: produkt.neuer_preis
         ? produkt.neuer_preis
@@ -43,9 +50,17 @@ const DetailsProdukt = () => {
       anzahl: 1,
     };
     dispatch(addItem(neuItem));
+
+    setNachricht(currentBestellung.message);
   };
+
+  function testons() {
+    setNachricht('');
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
+      {nachricht !== '' && <Popup message={nachricht} setNachricht={testons}  farbe="bg-green-600"/>}
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/2">
           <Image
@@ -65,12 +80,20 @@ const DetailsProdukt = () => {
             Stücke
           </p>
           <div className="mt-4">
-            <span className="text-red-400 text-lg line-through">
-              {produkt.alter_preis}€
-            </span>
-            <span className="text-indigo-600 text-2xl font-semibold ml-2">
-              {produkt.neuer_preis}€
-            </span>
+            {produkt.neuer_preis ? (
+              <p>
+                <span className="text-red-400 text-lg line-through">
+                  {produkt.alter_preis}€
+                </span>
+                <span className="text-indigo-600 text-2xl font-semibold ml-2">
+                  {produkt.neuer_preis}€
+                </span>
+              </p>
+            ) : (
+              <span className="text-indigo-600 text-2xl font-semibold ml-2">
+                {produkt.alter_preis}€
+              </span>
+            )}
           </div>
           <button
             className="mt-6 py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 transition duration-300"
