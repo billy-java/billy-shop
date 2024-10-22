@@ -11,10 +11,10 @@ import Footer from './components/Footer';
 export default function ReduxProvider({ children }: { children: ReactNode }) {
   return (
     <Provider store={store}>
-      <div className="flex flex-col">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
-        {children}
-        <Footer/>
+        <main className="flex-grow">{children}</main>
+        <Footer />
       </div>
     </Provider>
   );

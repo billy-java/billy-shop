@@ -13,7 +13,7 @@ import shopping_icon from '@/app/lib/icons/shopping.svg';
 const Navbar = () => {
   const [click, setClick] = useState<boolean>(false);
   const path = usePathname();
-  const cartList = useSelector((state: RootState) => state.system);
+  const produktList = useSelector((state: RootState) => state.cart);
 
   const getUpdatedMenus = () => {
     return menus.map((el) => ({
@@ -63,7 +63,7 @@ const Navbar = () => {
                           alt="Cart"
                         />{' '}
                         <span className="text-red-700 font-semibold text-lg">
-                          {cartList.length}
+                          {produktList.produkt_List.length}
                         </span>
                       </div>
                     ) : (
@@ -90,7 +90,7 @@ const Navbar = () => {
 
           {click && (
             <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
+              <div className="border border-indigo-700 rounded-lg px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
                 {getUpdatedMenus().map((el, index) => (
                   <Link
                     href={el.url}
@@ -100,7 +100,21 @@ const Navbar = () => {
                         ? 'bg-gray-900 hover:bg-gray-200 hover:text-black rounded-md mx-1 px-2 py-1 text-sm text-white cursor-pointer'
                         : 'rounded-md mx-1 px-2 py-1 hover:bg-gray-200 text-sm hover:text-gray-800 cursor-pointer'
                     }`}>
-                    {el.titel}
+                    {el.titel === 'Cart' ? (
+                      <div className="flex items-center space-x-2">
+                        <Image
+                          src={shopping_icon}
+                          width={20}
+                          height={20}
+                          alt="Cart"
+                        />{' '}
+                        <span className="text-red-700 font-semibold text-lg">
+                          {produktList.produkt_List.length}
+                        </span>
+                      </div>
+                    ) : (
+                      el.titel
+                    )}
                   </Link>
                 ))}
               </div>

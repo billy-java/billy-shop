@@ -10,8 +10,9 @@ export const menus: Menu[] = [
     titel: 'Home',
     url: '/',
   },
-  { activ: false, titel: 'Frauen', url: '/frau' },
-  { activ: false, titel: 'Männer', url: '/man' },
-  { activ: false, titel: 'Kinder', url: '/kind' },
+  { activ: false, titel: 'Produkte', url: '/produkte' },
+  { activ: false, titel: 'Frauen', url: '/frauen' },
+  { activ: false, titel: 'Männer', url: '/maenner' },
+  { activ: false, titel: 'Kinder', url: '/kinder' },
   { activ: false, titel: 'Cart', url: '/cart' },
 ];
