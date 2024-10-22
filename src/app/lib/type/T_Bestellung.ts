@@ -9,13 +9,3 @@ export type T_Bestellung = {
   bestellungs_Datum: string;
 };
 
-export const totalPreis_rechnen = (bestellung: T_Bestellung) => {
-  if (bestellung.produkt_List.length > 0) {
-    let totalPreis: number = 0;
-    bestellung.produkt_List.forEach((produkt_Cart) => {
-      totalPreis = totalPreis + produkt_Cart.produktPreis * produkt_Cart.anzahl;
-    });
-
-    return totalPreis;
-  }
-};

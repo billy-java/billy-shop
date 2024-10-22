@@ -1,20 +1,22 @@
 'use client';
 
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import { addItem } from '@/app/lib/redux/Cart_Slice';
-import { T_Produkt_Cart } from '@/app/lib/type/T_Produkt_Cart';
+import { generateID, T_Produkt_Cart } from '@/app/lib/type/T_Produkt_Cart';
 import { useParams } from 'next/navigation';
 import {
   frauenArtikeln,
   kinderArtikeln,
   maennerArtikeln,
 } from '@/app/lib/arrays/alle_Produkte';
+import { RootState } from '@/app/lib/redux/redux';
 
 const DetailsProdukt = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const produktList2 = useSelector((state: RootState) => state.cart);
 
   const produktList = [
     ...frauenArtikeln,
@@ -31,7 +33,8 @@ const DetailsProdukt = () => {
 
   const handleAddToCart = () => {
     const neuItem: T_Produkt_Cart = {
-      produkt_ID: produkt.artikelNr,
+      cart_ID: generateID(produktList2.produkt_List),
+      produkt_ID: produkt.id.toString(),
       produktPreis: produkt.neuer_preis
         ? produkt.neuer_preis
         : produkt.alter_preis,

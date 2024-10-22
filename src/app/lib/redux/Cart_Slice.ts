@@ -47,7 +47,7 @@ const Cart_Slice = createSlice({
     deleteItem: (state, action: PayloadAction<string>) => {
       const  id  = action.payload;
       const index = state.produkt_List.findIndex(
-        (item) => item.produkt_ID === id
+        (item) => item.cart_ID === id 
       );
       if (index !== -1) {
         // Mettez à jour le prix total

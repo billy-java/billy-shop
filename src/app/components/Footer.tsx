@@ -23,13 +23,13 @@ const Footer = () => {
                 <Link href="/">Startseite</Link>
               </li>
               <li className="px-3 hover:bg-indigo-600 rounded-md">
-                <Link href="/man">Männer</Link>
+                <Link href="/maenner">Männer</Link>
               </li>
               <li className="px-3 hover:bg-indigo-600 rounded-md">
-                <Link href="/frau">Frauen</Link>
+                <Link href="/frauen">Frauen</Link>
               </li>
               <li className="px-3 hover:bg-indigo-600 rounded-md">
-                <Link href="/kind">Kinder</Link>
+                <Link href="/kinder">Kinder</Link>
               </li>
               <li className="px-3 hover:bg-indigo-600 rounded-md">
                 <Link href="/cart">Cart</Link>
@@ -59,13 +59,13 @@ const Footer = () => {
               <Link href="/">Startseite</Link>
             </li>
             <li className="mx-20 hover:bg-indigo-600 rounded-md">
-              <Link href="/man">Männer</Link>
+              <Link href="/maenner">Männer</Link>
             </li>
             <li className="mx-20 hover:bg-indigo-600 rounded-md">
-              <Link href="/frau">Frauen</Link>
+              <Link href="/frauen">Frauen</Link>
             </li>
             <li className="mx-20 hover:bg-indigo-600 rounded-md">
-              <Link href="/kind">Kinder</Link>
+              <Link href="/kinder">Kinder</Link>
             </li>
             <li className="mx-20 hover:bg-indigo-600 rounded-md">
               <Link href="/cart">Cart</Link>

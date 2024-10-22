@@ -12,6 +12,7 @@ import {
   kinderArtikeln,
 } from '@/app/lib/arrays/alle_Produkte';
 import { I_Produkt } from '@/app/lib/type/I_Produkt';
+import Link from 'next/link';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -21,30 +22,32 @@ const Cart = () => {
     dispatch(deleteItem(id));
   };
 
-  const getBild = (produkt_ID: string, kategorie:string): StaticImageData => {
+  const getBild = (produkt_ID: string, kategorie: string): StaticImageData => {
     const alleProdukte: I_Produkt[] = [
       ...frauenArtikeln,
       ...maennerArtikeln,
       ...kinderArtikeln,
     ];
-    const item = alleProdukte.find((el) => el.id === Number(produkt_ID) && el.kategorie === kategorie);
+    const item = alleProdukte.find(
+      (el) => el.id === Number(produkt_ID) && el.kategorie === kategorie
+    );
 
     return item ? item.bild : shopping_icon;
   };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold text-gray-400 mb-10 text-center">
+      <h1 className="text-3xl font-bold text-gray-300 mb-10 text-center">
         Ihr Warenkorb
       </h1>
       {produkt_List.length === 0 ? (
-        <p className="text-xl text-gray-200 text-center">
+        <p className="text-xl text-gray-100 text-center">
           Ihr Warenkorb ist leer.
         </p>
       ) : (
         <>
-          <div className="border border-indigo-700 bg-zinc-950 rounded-lg shadow-md p-6">
-            <div className="overflow-x-auto">
+          <div className="border border-indigo-700 bg-black flex flex-col  rounded-lg shadow-md p-6">
+            <div className="overflow-x-auto mx-auto ">
               <table className="hidden md:block lg:block min-w-full divide-y divide-indigo-700">
                 <thead>
                   <tr>
@@ -65,15 +68,27 @@ const Cart = () => {
                 <tbody className="divide-y divide-indigo-700">
                   {produkt_List.map((item) => (
                     <tr key={item.produkt_ID}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 flex items-center">
-                        <Image
-                          src={getBild(item.produkt_ID, item.produkt_Kategorie)}
-                          width={40}
-                          height={40}
-                          alt="Produkt"
-                          className="mr-4"
-                        />
-                        <span>{item.produktName}</span>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 ">
+                        <Link
+                          className="flex items-center"
+                          href={`/produkte/${
+                            item.produkt_Kategorie.toLocaleLowerCase() +
+                            String(item.produkt_ID)
+                          }`}>
+                          <Image
+                            src={getBild(
+                              item.produkt_ID,
+                              item.produkt_Kategorie
+                            )}
+                            width={40}
+                            height={40}
+                            alt="Produkt"
+                            className="mr-4"
+                          />
+                          <span className="text-gray-400">
+                            {item.produktName}
+                          </span>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                         {item.produktPreis}€
@@ -84,7 +99,7 @@ const Cart = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                         <button
                           className="text-red-600 hover:text-red-800"
-                          onClick={() => handleRemoveItem(item.produkt_ID)}>
+                          onClick={() => handleRemoveItem(item.cart_ID)}>
                           Löschen
                         </button>
                       </td>
@@ -101,14 +116,20 @@ const Cart = () => {
                   key={item.produkt_ID}
                   className="border-b border-indigo-700 pb-4 mb-4">
                   <div className="flex items-center mb-2">
-                    <Image
-                      src={getBild(item.produkt_ID, item.produkt_Kategorie)}
-                      width={40}
-                      height={40}
-                      alt="Produkt"
-                      className="mr-4"
-                    />
-                    <span className="text-gray-400">{item.produktName}</span>
+                    <Link
+                      href={`/produkte/${
+                        item.produkt_Kategorie.toLocaleLowerCase() +
+                        String(item.produkt_ID)
+                      }`}>
+                      <Image
+                        src={getBild(item.produkt_ID, item.produkt_Kategorie)}
+                        width={40}
+                        height={40}
+                        alt="Produkt"
+                        className="mr-4"
+                      />
+                      <span className="text-gray-400">{item.produktName}</span>
+                    </Link>
                   </div>
                   <div className="text-gray-400">
                     <span>Prix: {item.produktPreis}€</span>
@@ -116,7 +137,7 @@ const Cart = () => {
                   </div>
                   <button
                     className="text-red-600 hover:text-red-800 mt-2"
-                    onClick={() => handleRemoveItem(item.produkt_ID)}>
+                    onClick={() => handleRemoveItem(item.cart_ID)}>
                     Löschen
                   </button>
                 </div>

@@ -15,8 +15,7 @@ export const bestseller_Produkte: I_Produkt[] = [
   {
     id: 3,
     artikelNr: 'FRAU-003',
-    name: 'Gestreifte Bluse mit Flügelärmeln Gestreifte Bluse mit Flügelärmeln und Kragen Gestreifte Bluse mit Flügelärmeln und Kragen und Kragen',
-    beschreibung:
+    name: 'T-Shirt Body', beschreibung:
       'Schick und komfortabel, diese Bluse ist ein Must-Have für jeden Kleiderschrank.',
     kategorie: 'Frauen',
     neuer_preis: 72.0,
@@ -28,7 +27,7 @@ export const bestseller_Produkte: I_Produkt[] = [
   {
     id: 5,
     artikelNr: 'FRAU-005',
-    name: 'Gestreifte Bluse mit Flügelärmeln und Kragen',
+    name: 'T-Shirt Sommer - Pink',
     beschreibung:
       'Diese Bluse kombiniert klassische und moderne Elemente für einen zeitlosen Look.',
     kategorie: 'Frauen',
@@ -41,7 +40,7 @@ export const bestseller_Produkte: I_Produkt[] = [
   {
     id: 8,
     artikelNr: 'MANN-020',
-    name: 'Herren Bomberjacke mit Reißverschluss in Grün - Slim Fit',
+    name: 'Jacke - blau',
     beschreibung:
       'Hochwertige Materialien und ein modernes Design machen diese Jacke zum perfekten Begleiter.',
     kategorie: 'Maenner',
@@ -54,7 +53,7 @@ export const bestseller_Produkte: I_Produkt[] = [
   {
     id: 1,
     artikelNr: 'KIND-025',
-    name: 'Jungen Kapuzenpullover in Orange mit Farbblockierung',
+    name: 'Sweat blau Citron',
     beschreibung:
       'Ein bequemer Kapuzenpullover in leuchtendem Orange, ideal für kühle Tage.',
     kategorie: 'Kinder',
@@ -67,7 +66,7 @@ export const bestseller_Produkte: I_Produkt[] = [
   {
     id: 3,
     artikelNr: 'KIND-027',
-    name: 'Jungen Kapuzenpullover in Orange mit Farbblockierung',
+    name: 'Sweat multicolor',
     beschreibung:
       'Hergestellt aus weichem, langlebigem Material für maximalen Komfort.',
     kategorie: 'Kinder',
@@ -83,7 +82,7 @@ export const neue_Produkte: I_Produkt[] = [
   {
     id: 6,
     artikelNr: 'FRAU-006',
-    name: 'Gestreifte Bluse mit Flügelärmeln und Kragen',
+    name: 'Pullover',
     beschreibung:
       'Diese Bluse bietet Komfort und Stil, perfekt für jede Gelegenheit.',
     kategorie: 'Frauen',
@@ -96,7 +95,7 @@ export const neue_Produkte: I_Produkt[] = [
   {
     id: 9,
     artikelNr: 'FRAU-009',
-    name: 'Gestreifte Bluse mit Flügelärmeln und Kragen',
+    name: 'Shirtdress für Sommer ',
     beschreibung:
       'Moderne Bluse mit einem verspielten Look, ideal für den Alltag.',
     kategorie: 'Frauen',
@@ -109,7 +108,7 @@ export const neue_Produkte: I_Produkt[] = [
   {
     id: 5,
     artikelNr: 'MANN-017',
-    name: 'Herren Bomberjacke mit Reißverschluss in Grün - Slim Fit',
+    name: 'Vestjean',
     beschreibung:
       'Sportlich und modisch – die perfekte Jacke für den urbanen Mann.',
     kategorie: 'Maenner',
@@ -122,7 +121,7 @@ export const neue_Produkte: I_Produkt[] = [
   {
     id: 9,
     artikelNr: 'MANN-021',
-    name: 'Herren Bomberjacke mit Reißverschluss in Grün - Slim Fit',
+    name: 'Jacke multicolor gegen Regen',
     beschreibung:
       'Kombiniert einen sportlichen und stilvollen Look, perfekt für jede Gelegenheit.',
     kategorie: 'Maenner',
@@ -135,7 +134,7 @@ export const neue_Produkte: I_Produkt[] = [
   {
     id: 9,
     artikelNr: 'KIND-033',
-    name: 'Jungen Kapuzenpullover in Orange mit Farbblockierung',
+    name: 'Sweat normal',
     beschreibung: 'Dieser Pullover bietet Komfort und Stil für aktive Kinder.',
     kategorie: 'Kinder',
     neuer_preis: 85.0,

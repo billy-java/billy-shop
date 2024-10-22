@@ -5,8 +5,10 @@ import shopping_icon from '@/app/lib/icons/shopping.svg';
 import Link from 'next/link';
 import Image from 'next/image';
 import { I_Produkt } from '../lib/type/I_Produkt';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../lib/redux/Cart_Slice';
+import { generateID } from '../lib/type/T_Produkt_Cart';
+import { RootState } from '../lib/redux/redux';
 
 interface produkt_Hook {
   titel: string;
@@ -15,9 +17,12 @@ interface produkt_Hook {
 
 const CardList = ({ titel, list }: produkt_Hook) => {
   const dispatch = useDispatch();
+  const produktList = useSelector((state: RootState) => state.cart);
 
+  
   const handleAddToCart = (produkt: I_Produkt) => {
     const itemToAdd = {
+      cart_ID:generateID(produktList.produkt_List),
       produkt_ID: produkt.id.toString(),
       produktPreis: produkt.neuer_preis
         ? produkt.neuer_preis
