@@ -12,20 +12,24 @@ import { RootState } from '../lib/redux/redux';
 import Popup from './Popup';
 
 interface produkt_Hook {
-  titel: string;
+  titel?: string;
   list: I_Produkt[];
+  anzahl?: number; // Nouvelle propriété pour le nombre de cartes à afficher
 }
 
-const CardList = ({ titel, list }: produkt_Hook) => {
+const CardList = ({ titel, list, anzahl }: produkt_Hook) => {
   const dispatch = useDispatch();
   const currentBestellung = useSelector((state: RootState) => state.cart);
   const [nachricht, setNachricht] = useState<string>('');
 
   useEffect(() => {
     setNachricht(currentBestellung.message);
-    return ;
   }, [currentBestellung]);
-  
+
+  useEffect(() => {
+    setNachricht('');
+  }, []);
+
   const handleAddToCart = (produkt: I_Produkt) => {
     const itemToAdd = {
       cart_ID: generateID(currentBestellung.produkt_List),
@@ -39,25 +43,39 @@ const CardList = ({ titel, list }: produkt_Hook) => {
     };
 
     dispatch(addItem(itemToAdd));
-
-    /* if (currentBestellung.neuProdukt_INFO === "Erfolgreicht") { */
     setNachricht(currentBestellung.message);
-    /* } */
-
-  
   };
 
-  function testons() {
-    setNachricht("")
-  }
+  const kategorieURL = (): string => {
+    const menus = [
+      { titel: 'Frauen', url: '/frauen' },
+      { titel: 'Maenner', url: '/maenner' },
+      { titel: 'Kinder', url: '/kinder' },
+    ];
 
+    for (const element of menus) {
+      if (element.titel === list[0].kategorie) {
+        return element.url;
+      }
+    }
+
+    return '/';
+  };
+
+  const displayCount = anzahl && anzahl < list.length ? anzahl : list.length; // Détermine le nombre de cartes à afficher
 
   return (
     <div className="my-20">
-      {nachricht !== '' && <Popup message={nachricht} setNachricht={testons}  farbe="bg-green-600"/>}
+      {nachricht !== '' && (
+        <Popup
+          message={nachricht}
+          setNachricht={() => setNachricht('')}
+          farbe="bg-green-600"
+        />
+      )}
       <h2 className="text-2xl font-semibold text-gray-300 mb-4">{titel}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {list.map((produkt, index) => {
+        {list.slice(0, displayCount).map((produkt, index) => {
           return (
             <div
               className="bg-zinc-900 pb-6 shadow-white shadow-md text-gray-400 flex flex-col h-full rounded-lg hover:shadow-blue-700 hover:shadow-lg"
@@ -69,6 +87,7 @@ const CardList = ({ titel, list }: produkt_Hook) => {
                   }`}>
                   <Image
                     className="mx-auto"
+                    layout="responsive"
                     src={produkt.bild}
                     alt={produkt.name}
                     width={300}
@@ -83,7 +102,7 @@ const CardList = ({ titel, list }: produkt_Hook) => {
                   <p>Kategorie: {produkt.kategorie}</p>
                   <p>
                     Grösse:{' '}
-                    <span className="text-orange-600">{produkt.groesse}</span>{' '}
+                    <span className="text-orange-600">{produkt.groesse}</span>
                   </p>
                 </div>
 
@@ -109,6 +128,7 @@ const CardList = ({ titel, list }: produkt_Hook) => {
                     <div className="mx-auto flex items-center">
                       <Image
                         src={shopping_icon}
+                        layout="responsive"
                         width={30}
                         height={30}
                         alt={'cart'}
@@ -121,10 +141,21 @@ const CardList = ({ titel, list }: produkt_Hook) => {
             </div>
           );
         })}
+        {anzahl &&
+          anzahl < list.length && ( // Affiche le bouton "voir plus" si nécessaire
+            <div className="bg-zinc-900 pb-6 shadow-white shadow-md text-gray-400 flex flex-col h-full rounded-lg hover:shadow-blue-700 hover:shadow-lg ">
+              <Link href={kategorieURL()} className="my-auto ">
+                <div className="w-[90%] mx-auto flex flex-col h-full items-center justify-center">
+                  <h3 className="mt-4 text-2xl font-medium text-gray-300">
+                    Mehr Artikeln...
+                  </h3>
+                </div>
+              </Link>
+            </div>
+          )}
       </div>
     </div>
   );
 };
 
 export default CardList;
-
