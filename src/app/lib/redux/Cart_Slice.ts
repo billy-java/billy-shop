@@ -9,7 +9,6 @@ const initial: T_Bestellung = {
   preis: 0,
   stand: 'lauft',
   bestellungs_Datum: new Date().toString(),
-  message: '',
 };
 
 const Cart_Slice = createSlice({
@@ -29,14 +28,10 @@ const Cart_Slice = createSlice({
         // Si l'article existe déjà, augmentez simplement la quantité
         existingItem.anzahl += neuItem.anzahl;
 
-        state.message =
-          'Hingefügt, insgesamt ' +
-          existingItem.anzahl +
-          ' Mal in Ihrem Warenkorb.';
+      
       } else {
         // Sinon, ajoutez le nouvel article à la liste
         state.produkt_List.push(neuItem);
-        state.message = 'Artikel (' + neuItem.produktName + ') hingefügt!';
       }
       // Mettez à jour le prix total
       state.preis += neuItem.produktPreis * neuItem.anzahl;
@@ -57,15 +52,13 @@ const Cart_Slice = createSlice({
       const id = action.payload;
       const index = state.produkt_List.findIndex((item) => item.cart_ID === id);
       if (index !== -1) {
-        const name = state.produkt_List[index].produktName;
         // Mettez à jour le prix total
         state.preis -=
           state.produkt_List[index].produktPreis *
           state.produkt_List[index].anzahl;
         // Supprimez l'article de la liste
         state.produkt_List.splice(index, 1);
-        state.message = 'Der Artikel (' + name + ') wurde gelöscht.';
-      }
+         }
     },
   },
 });

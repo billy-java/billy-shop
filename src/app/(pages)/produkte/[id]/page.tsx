@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import { addItem } from '@/app/lib/redux/Cart_Slice';
@@ -19,11 +19,6 @@ const DetailsProdukt = () => {
   const dispatch = useDispatch();
   const currentBestellung = useSelector((state: RootState) => state.cart);
   const [nachricht, setNachricht] = useState<string>('');
-
-  useEffect(() => {
-    setNachricht(currentBestellung.message);
-    return;
-  }, [currentBestellung]);
 
   const produktList = [
     ...frauenArtikeln,
@@ -51,7 +46,7 @@ const DetailsProdukt = () => {
     };
     dispatch(addItem(neuItem));
 
-    setNachricht(currentBestellung.message);
+    setNachricht('Artikel (' + neuItem.produktName + ') hingefügt!');
   };
 
   function testons() {
@@ -60,7 +55,13 @@ const DetailsProdukt = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {nachricht !== '' && <Popup message={nachricht} setNachricht={testons}  farbe="bg-green-600"/>}
+      {nachricht !== '' && (
+        <Popup
+          message={nachricht}
+          setNachricht={testons}
+          farbe="bg-green-600"
+        />
+      )}
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/2">
           <Image
@@ -71,7 +72,7 @@ const DetailsProdukt = () => {
             className="rounded-lg shadow-lg"
           />
         </div>
-        <div className="md:w-1/2 md:pl-8">
+        <div className="md:w-1/2 md:pl-8 mt-6">
           <h1 className="text-3xl font-bold text-gray-200">{produkt.name}</h1>
           <p className="mt-4 text-lg text-gray-400">{produkt.beschreibung}</p>
           <p className="mt-4 text-lg text-gray-400">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import shopping_icon from '@/app/lib/icons/shopping.svg';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,25 +10,20 @@ import { addItem } from '../lib/redux/Cart_Slice';
 import { generateID } from '../lib/type/T_Produkt_Cart';
 import { RootState } from '../lib/redux/redux';
 import Popup from './Popup';
+import { T_Bestellung } from '../lib/type/T_Bestellung';
 
 interface produkt_Hook {
   titel?: string;
   list: I_Produkt[];
-  anzahl?: number; // Nouvelle propriété pour le nombre de cartes à afficher
+  anzahl?: number; 
 }
 
 const CardList = ({ titel, list, anzahl }: produkt_Hook) => {
   const dispatch = useDispatch();
-  const currentBestellung = useSelector((state: RootState) => state.cart);
+  const currentBestellung: T_Bestellung = useSelector((state: RootState) => state.cart);
   const [nachricht, setNachricht] = useState<string>('');
 
-  useEffect(() => {
-    setNachricht(currentBestellung.message);
-  }, [currentBestellung]);
-
-  useEffect(() => {
-    setNachricht('');
-  }, []);
+  
 
   const handleAddToCart = (produkt: I_Produkt) => {
     const itemToAdd = {
@@ -43,7 +38,7 @@ const CardList = ({ titel, list, anzahl }: produkt_Hook) => {
     };
 
     dispatch(addItem(itemToAdd));
-    setNachricht(currentBestellung.message);
+    setNachricht('Artikel (' + produkt.name + ') hingefügt!');
   };
 
   const kategorieURL = (): string => {
@@ -64,12 +59,17 @@ const CardList = ({ titel, list, anzahl }: produkt_Hook) => {
 
   const displayCount = anzahl && anzahl < list.length ? anzahl : list.length; // Détermine le nombre de cartes à afficher
 
+  function resetMsg() {
+    setNachricht('');
+  }
+
+
   return (
     <div className="my-20">
       {nachricht !== '' && (
         <Popup
           message={nachricht}
-          setNachricht={() => setNachricht('')}
+          setNachricht={resetMsg}
           farbe="bg-green-600"
         />
       )}

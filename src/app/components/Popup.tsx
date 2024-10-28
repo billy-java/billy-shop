@@ -11,7 +11,7 @@ const Popup = ({ message, setNachricht, farbe }: HoookPopup) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setNachricht();
-    }, 8000);
+    }, 5000);
 
     // Nettoyage du timer lors du démontage du composant
     return () => clearTimeout(timer);

@@ -7,6 +7,5 @@ export type T_Bestellung = {
   preis: number;
   bestellungs_Datum: string;
   stand: string;
-  message: string;
 };
 
