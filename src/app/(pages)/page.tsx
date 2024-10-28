@@ -36,7 +36,7 @@ const categories = [
 
 const Home = () => {
   return (
-    <div className="min-h-screen ">
+    <div className="max-w-7xl px-4 py-6 sm:px-6 lg:px-8  mx-auto pb-20">
       {/* Section d'introduction */}
       <section
         className="bg-cover bg-center h-96 flex flex-col items-center justify-center bg-indigo-500"
@@ -88,9 +88,9 @@ const Home = () => {
 
       {/* Section des produits en vedette */}
       <section className="py-10 ">
-        <div className="max-w-7xl px-4 py-6 sm:px-6 lg:px-8 border-b mx-auto mt-10 pb-20 border-b-white">
-          <CardList titel="Bestseller" list={bestseller_Produkte}/>
-          <CardList titel="Neue Artikeln" list={neue_Produkte}  />
+        <div className="max-w-7xl px-4 py-6 sm:px-6 lg:px-8 border-b mx-auto mt-10 pb-20 ">
+          <CardList titel="Bestseller" list={bestseller_Produkte} />
+          <CardList titel="Neue Artikeln" list={neue_Produkte} />
         </div>
       </section>
     </div>
