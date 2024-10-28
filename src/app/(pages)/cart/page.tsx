@@ -1,3 +1,5 @@
+// src\app\(pages)\cart\page.tsx
+
 'use client';
 
 import { RootState } from '@/app/lib/redux/redux';
@@ -15,6 +17,10 @@ import { I_Produkt } from '@/app/lib/type/I_Produkt';
 import Link from 'next/link';
 import Popup from '@/app/components/Popup';
 import { T_Produkt_Cart } from '@/app/lib/type/T_Produkt_Cart';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -23,15 +29,14 @@ const Cart = () => {
 
   useEffect(() => {
     setNachricht('');
-    return;
   }, []);
 
   const handleRemoveItem = (produkt: T_Produkt_Cart) => {
     dispatch(deleteItem(produkt.cart_ID));
-    setNachricht('Der Artikel (' + produkt.produktName + ') wurde gelöscht.');
+    setNachricht(`Der Artikel (${produkt.produktName}) wurde gelöscht.`);
   };
 
-  const getBild = (produkt_ID: string, kategorie: string): StaticImageData => {
+  const getBild = (produkt_ID: string, kategorie: string): StaticImageData | string => {
     const alleProdukte: I_Produkt[] = [
       ...frauenArtikeln,
       ...maennerArtikeln,
@@ -40,13 +45,47 @@ const Cart = () => {
     const item = alleProdukte.find(
       (el) => el.id === Number(produkt_ID) && el.kategorie === kategorie
     );
-
-    return item ? item.bild : shopping_icon;
+    return item?.bild || shopping_icon; // Renvoie `shopping_icon` en cas d'absence de l'image
   };
 
   function resetMsg() {
     setNachricht('');
   }
+
+  const handleCheckout = async (totalPreis: number) => {
+    const amountInCents = Math.round(totalPreis * 100);
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              price_data: {
+                currency: 'eur',
+                product_data: {
+                  name: 'Produktbeispiel',
+                },
+                unit_amount: amountInCents,
+              },
+              quantity: 1,
+            },
+          ],
+        }),
+      });
+
+      const session = await response.json();
+      if (stripePromise && session.id) {
+        const stripe = await stripePromise;
+        stripe?.redirectToCheckout({ sessionId: session.id });
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la session de paiement:', error);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -160,12 +199,16 @@ const Cart = () => {
               ))}
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 flex flex-col">
               <h2 className="text-xl font-semibold text-white text-center">
-                {' '}
                 {/* Centrer le total */}
                 Kosten: {preis}€
               </h2>
+              <button
+                onClick={() => handleCheckout(preis)}
+                className="px-10 py-2 mx-auto mt-6 text-white bg-blue-500 rounded hover:bg-blue-600">
+                Bestellen
+              </button>
             </div>
           </div>
         </>

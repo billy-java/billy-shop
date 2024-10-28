@@ -8,6 +8,7 @@ import {
   maennerArtikeln,
 } from '@/app/lib/arrays/alle_Produkte';
 
+
 const Produkte = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
