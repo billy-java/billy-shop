@@ -7,7 +7,11 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import shopping_icon from '@/app/lib/icons/shopping.svg';
 import Image, { StaticImageData } from 'next/image';
-import { deleteItem } from '@/app/lib/redux/Cart_Slice';
+import {
+  deleteItem,
+  updateAnzahl,
+  updateBestellung,
+} from '@/app/lib/redux/Cart_Slice';
 import {
   frauenArtikeln,
   maennerArtikeln,
@@ -16,27 +20,62 @@ import {
 import { I_Produkt } from '@/app/lib/type/I_Produkt';
 import Link from 'next/link';
 import Popup from '@/app/components/Popup';
-import { T_Produkt_Cart } from '@/app/lib/type/T_Produkt_Cart';
 import { loadStripe } from '@stripe/stripe-js';
+import { format } from 'date-fns';
+import { T_Produkt_Cart } from '@/app/lib/type/T_Produkt_Cart';
 
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+const stripePromise = stripePublishableKey
+  ? loadStripe(stripePublishableKey)
+  : null;
 
 const Cart = () => {
   const dispatch = useDispatch();
   const { produkt_List, preis } = useSelector((state: RootState) => state.cart);
   const [nachricht, setNachricht] = useState<string>('');
 
+  const saveCartToLocalStorage = () => {
+    localStorage.setItem(
+      'cart',
+      JSON.stringify({ list: produkt_List, price: preis })
+    );
+  };
+
   useEffect(() => {
-    setNachricht('');
-  }, []);
+    // Charger le panier depuis le localStorage à l'initialisation du composant
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      const { list, price } = JSON.parse(savedCart);
+      if (list && list.length > 0) {
+        dispatch(
+          updateBestellung({
+            bestellungs_Nr: 1,
+            kunde_Nr: '1',
+            produkt_List: list,
+            preis: price,
+            stand: 'lauft',
+            bestellungs_Datum: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+          })
+        );
+      }
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    saveCartToLocalStorage();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [produkt_List, preis]);
 
   const handleRemoveItem = (produkt: T_Produkt_Cart) => {
     dispatch(deleteItem(produkt.cart_ID));
     setNachricht(`Der Artikel (${produkt.produktName}) wurde gelöscht.`);
   };
 
-  const getBild = (produkt_ID: string, kategorie: string): StaticImageData | string => {
+  const getBild = (
+    produkt_ID: string,
+    kategorie: string
+  ): StaticImageData | string => {
     const alleProdukte: I_Produkt[] = [
       ...frauenArtikeln,
       ...maennerArtikeln,
@@ -83,9 +122,78 @@ const Cart = () => {
         stripe?.redirectToCheckout({ sessionId: session.id });
       }
     } catch (error) {
-      console.error('Erreur lors de la création de la session de paiement:', error);
+      console.error(
+        'Erreur lors de la création de la session de paiement:',
+        error
+      );
     }
   };
+
+  const handleChange = (
+   produkt: T_Produkt_Cart,
+    inputID1?: string,
+    inputID2?: string
+  ) => {
+    // Vérifiez si au moins un des IDs d'input est défini
+    if (!inputID1 && !inputID2) {
+      console.error("Aucun ID d'input fourni.");
+      return; // Sortir si aucun ID n'est fourni
+    }
+
+    // Récupérer l'input en fonction de l'ID défini
+    const input = document.getElementById(
+      inputID1 || inputID2!
+    ) as HTMLInputElement; // Utilisez l'opérateur non-null pour s'assurer que l'ID n'est pas undefined
+
+    if (input) {
+      // Incrémentation ou décrémentation en fonction des IDs
+      if (inputID1) {
+        input.stepUp(); // Incrémente la valeur
+      }
+      if (inputID2) {
+        if (parseInt(input.value) > 0) {
+          input.stepDown(); 
+          if (input.value === "0") {
+            handleRemoveItem(produkt)
+          }
+        }
+      }
+
+      // Obtenez l'élément à mettre à jour
+      const item = produkt_List.find(
+        (el) =>
+          el.produkt_ID === produkt.produkt_ID && el.produkt_Kategorie === produkt.produkt_Kategorie
+      );
+
+      // Vérifiez si l'élément a été trouvé
+      if (item) {
+        const value = Number(input.value);
+        if (value >= 0) {
+          // Vérifiez que la valeur est >= 0
+          const itemToAdd: T_Produkt_Cart = {
+            ...item,
+            anzahl: value,
+          };
+          dispatch(updateAnzahl(itemToAdd));
+        } else {
+          console.error('La quantité ne peut pas être inférieure à 0');
+        }
+      } else {
+        console.error('Produit non trouvé');
+        // Vous pouvez gérer l'erreur ici, par exemple en affichant un message d'erreur.
+      }
+    } else {
+      console.error('Input non trouvé avec les IDs spécifiés');
+    }
+  };
+
+  function clean() {
+    produkt_List.forEach((element) => {
+      handleRemoveItem(element);
+    });
+    localStorage.clear();
+    setNachricht(`Ihr Warenkorb wurde geleert.`);
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -149,7 +257,38 @@ const Cart = () => {
                         {item.produktPreis}€
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {item.anzahl}
+                        <div className="relative inline-flex items-center">
+                          <input
+                            id={`input-${item.produkt_ID}`} // Assurez-vous que l'ID est unique
+                            className="bg-black w-20 text-white text-center" // Ajout de `text-white` pour un contraste avec `bg-black`
+                            type="number"
+                            defaultValue={item.anzahl}
+                          />
+
+                          <button
+                            onClick={() =>
+                              handleChange(
+                                item,
+                                undefined,
+                                `input-${item.produkt_ID}`
+                              )
+                            }
+                            className="absolute left-0 px-2 h-full text-gray-600 hover:bg-gray-200 rounded-l-lg">
+                            −
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              handleChange(
+                                item,
+                                `input-${item.produkt_ID}`,
+                                undefined
+                              )
+                            }
+                            className="absolute right-0 px-2 h-full text-gray-600 hover:bg-gray-200 rounded-r-lg">
+                            +
+                          </button>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                         <button
@@ -204,11 +343,18 @@ const Cart = () => {
                 {/* Centrer le total */}
                 Kosten: {preis}€
               </h2>
-              <button
-                onClick={() => handleCheckout(preis)}
-                className="px-10 py-2 mx-auto mt-6 text-white bg-blue-500 rounded hover:bg-blue-600">
-                Bestellen
-              </button>
+              <div className=" mx-auto space-x-4">
+                <button
+                  onClick={() => handleCheckout(preis)}
+                  className="px-10 py-2 mt-6 text-white bg-blue-500 rounded hover:bg-blue-600">
+                  Bestellen
+                </button>
+                <button
+                  onClick={() => clean()}
+                  className="px-5 py-1 mx-auto mt-6 text-sm text-white bg-red-500 rounded hover:bg-red-600">
+                  Warenkorb leeren
+                </button>
+              </div>
             </div>
           </div>
         </>

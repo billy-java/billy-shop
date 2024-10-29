@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { T_Bestellung } from '../type/T_Bestellung';
 import { T_Produkt_Cart } from '../type/T_Produkt_Cart';
+import { format } from 'date-fns';
 
 const initial: T_Bestellung = {
   bestellungs_Nr: 1,
@@ -8,7 +9,7 @@ const initial: T_Bestellung = {
   produkt_List: [] as T_Produkt_Cart[],
   preis: 0,
   stand: 'lauft',
-  bestellungs_Datum: new Date().toString(),
+  bestellungs_Datum: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
 };
 
 const Cart_Slice = createSlice({
@@ -27,14 +28,28 @@ const Cart_Slice = createSlice({
       if (existingItem) {
         // Si l'article existe déjà, augmentez simplement la quantité
         existingItem.anzahl += neuItem.anzahl;
-
-      
       } else {
         // Sinon, ajoutez le nouvel article à la liste
         state.produkt_List.push(neuItem);
       }
       // Mettez à jour le prix total
       state.preis += neuItem.produktPreis * neuItem.anzahl;
+    },
+    updateAnzahl: (state, action: PayloadAction<T_Produkt_Cart>) => {
+      const updatedItem = action.payload;
+      const existingItem = state.produkt_List.find(
+        (item) =>
+          item.produkt_ID === updatedItem.produkt_ID &&
+          item.produkt_Kategorie === updatedItem.produkt_Kategorie
+      );
+
+      if (existingItem) {
+        const previousAnzahl = existingItem.anzahl; // stocke l'ancienne quantité
+        existingItem.anzahl = updatedItem.anzahl; // met à jour la quantité
+        // Ajuste le prix en fonction de la différence de quantité
+        state.preis +=
+          existingItem.produktPreis * (existingItem.anzahl - previousAnzahl);
+      }
     },
     updateItem: (state, action: PayloadAction<T_Produkt_Cart>) => {
       const updatedItem = action.payload;
@@ -58,13 +73,22 @@ const Cart_Slice = createSlice({
           state.produkt_List[index].anzahl;
         // Supprimez l'article de la liste
         state.produkt_List.splice(index, 1);
-         }
+      }
+    },
+    updateBestellung: (state, action: PayloadAction<T_Bestellung>) => {
+      return { ...action.payload };
     },
   },
 });
 
 // Actions exportées pour utiliser dans les composants
-export const { addItem, updateItem, deleteItem } = Cart_Slice.actions;
+export const {
+  addItem,
+  updateItem,
+  deleteItem,
+  updateBestellung,
+  updateAnzahl,
+} = Cart_Slice.actions;
 
 // Exports de l'export par défaut du réducteur
 export default Cart_Slice.reducer;

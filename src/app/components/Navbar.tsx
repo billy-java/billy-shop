@@ -63,7 +63,7 @@ const Navbar = () => {
                           alt="Cart"
                         />{' '}
                         <span className="text-red-700 font-semibold text-lg">
-                          {produktList.produkt_List.length}
+                          {produktList?.produkt_List?.length}
                         </span>
                       </div>
                     ) : (
@@ -75,6 +75,27 @@ const Navbar = () => {
             </div>
 
             <div className="md:hidden flex items-center">
+              <Link
+                onClick={() => setClick(false)}
+                href="/cart"
+                className={`${
+                  getUpdatedMenus()[0].activ
+                    ? 'bg-gray-300 rounded-md mx-1 px-2 py-1 text-sm text-gray-800 cursor-pointer'
+                    : 'bg-gray-900 rounded-md mx-1 px-2 py-1 hover:bg-gray-200 text-sm hover:text-gray-800 cursor-pointer'
+                }`}>
+                <div className="flex items-center space-x-2">
+                  <Image
+                    src={shopping_icon}
+                    width={20}
+                    height={20}
+                    alt="Cart"
+                  />{' '}
+                  <span className="text-red-700 font-semibold text-lg">
+                    {produktList?.produkt_List?.length}
+                  </span>
+                </div>
+              </Link>
+
               <button
                 onClick={() => setClick(!click)}
                 className="inline-flex items-center justify-center p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-200">
@@ -91,33 +112,21 @@ const Navbar = () => {
           {click && (
             <div className="md:hidden">
               <div className="border border-indigo-700 rounded-lg px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
-                {getUpdatedMenus().map((el, index) => (
-                  <Link
-                    onClick={() => setClick(false)}
-                    href={el.url}
-                    key={index}
-                    className={`${
-                      el.activ
-                        ? 'bg-gray-900 hover:bg-gray-200 hover:text-black rounded-md mx-1 px-2 py-1 text-sm text-white cursor-pointer'
-                        : 'rounded-md mx-1 px-2 py-1 hover:bg-gray-200 text-sm hover:text-gray-800 cursor-pointer'
-                    }`}>
-                    {el.titel === 'Cart' ? (
-                      <div className="flex items-center space-x-2">
-                        <Image
-                          src={shopping_icon}
-                          width={20}
-                          height={20}
-                          alt="Cart"
-                        />{' '}
-                        <span className="text-red-700 font-semibold text-lg">
-                          {produktList.produkt_List.length}
-                        </span>
-                      </div>
-                    ) : (
-                      el.titel
-                    )}
-                  </Link>
-                ))}
+                {getUpdatedMenus()
+                  .slice(1, getUpdatedMenus().length)
+                  .map((el, index) => (
+                    <Link
+                      onClick={() => setClick(false)}
+                      href={el.url}
+                      key={index}
+                      className={`${
+                        el.activ
+                          ? 'bg-gray-900 hover:bg-gray-200 hover:text-black rounded-md mx-1 px-2 py-1 text-sm text-white cursor-pointer'
+                          : 'rounded-md mx-1 px-2 py-1 hover:bg-gray-200 text-sm hover:text-gray-800 cursor-pointer'
+                      }`}>
+                      {el.titel}
+                    </Link>
+                  ))}
               </div>
             </div>
           )}

@@ -5,6 +5,7 @@ interface Menu {
 }
 
 export const menus: Menu[] = [
+  { activ: false, titel: 'Cart', url: '/cart' },
   {
     activ: false,
     titel: 'Home',
@@ -14,5 +15,4 @@ export const menus: Menu[] = [
   { activ: false, titel: 'Frauen', url: '/frauen' },
   { activ: false, titel: 'Männer', url: '/maenner' },
   { activ: false, titel: 'Kinder', url: '/kinder' },
-  { activ: false, titel: 'Cart', url: '/cart' },
 ];
